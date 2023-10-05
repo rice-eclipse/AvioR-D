@@ -49,10 +49,11 @@ if __name__ == '__main__':
         ret, frame = cap.read()
         # Comment / uncomment if camera needs to be flipped based on mount orentation
         #frame = cv2.flip(frame, -1)  # Flip camera vertically
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        blurred = cv2.GaussianBlur(frame, (5, 5), 0)
+        hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 
-        lower_range = np.array([0, 50, 0], dtype=np.uint8)
-        upper_range = np.array([0, 255, 255], dtype=np.uint8)
+        lower_range = np.array([35, 110, 40], dtype=np.uint8)
+        upper_range = np.array([85, 180, 130], dtype=np.uint8)
 
         # create a mask for image
         mask = cv2.inRange(hsv, lower_range, upper_range)
