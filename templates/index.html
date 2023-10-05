@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>AVIO RD DASHBOARD</title>
+    <link rel="stylesheet" href="static/index.css">
+  </head>
+  <body>
+    <h1>Pi Video Surveillance</h1>
+    <div class="video-container">
+      <div class="mask">
+        <div class="label">
+          <p>Mask</p>
+        </div>
+        <img src="{{ url_for('video_feed_mask') }}">
+      </div>
+      <div class="raw">
+        <div class="label">
+          <p>Raw</p>
+        </div>
+        <img src="{{ url_for('video_feed_raw') }}">
+      </div>
+
+    </div>
+
+  </body>
+</html>

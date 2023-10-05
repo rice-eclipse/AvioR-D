@@ -1,6 +1,6 @@
 import argparse
+import time
 from time import sleep
-import RPi.GPIO as GPIO
 import cv2
 import numpy as np
 import threading
@@ -9,11 +9,12 @@ from flask import Flask
 from flask import render_template
 import sys
 
-outputFrame = None
+outputFrameMask = None
+outputFrameRaw = None
 lock = threading.Lock()
 
 # initialize a flask object
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 
 
 @app.route("/")
@@ -22,48 +23,33 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/video_feed")
-def video_feed():
+@app.route("/video_feed_mask")
+def video_feed_mask():
     # return the response generated along with the specific media
     # type (mime type)
-    return Response(generate(),
+    return Response(generate_mask_mask(),
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
-
-@app.route("/video_feed")
-def video_feed():
+@app.route("/video_feed_raw")
+def video_feed_raw():
     # return the response generated along with the specific media
     # type (mime type)
-    return Response(generate(),
+    return Response(generate_mask_raw(),
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
 
 pan_id = 27
 tilt_id = 17
 button_id = 2
-
-GPIO.setup(tilt_id, GPIO.OUT)  # white => TILT
-GPIO.setup(pan_id, GPIO.OUT)  # gray ==> PAN
-GPIO.setup(button_id, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+cap = cv2.VideoCapture(0)
 
 
-def setServoAngle(servo, angle):
-    # assert angle >=30 and angle <= 150
-    pwm = GPIO.PWM(servo, 50)
-    pwm.start(8)
-    dutyCycle = angle / 18. + 3.
-    # magic numbers  18. + 3.
-    pwm.ChangeDutyCycle(dutyCycle)
-    sleep(0.3)
-    pwm.stop()
 
 
-def generate():
+
+def generate_mask_mask():
     # grab global references to the output frame and lock variables
-    global outputFrame, lock
+    global outputFrameMask, lock
 
     # loop over frames from the output stream
     while True:
@@ -71,11 +57,12 @@ def generate():
         with lock:
             # check if the output frame is available, otherwise skip
             # the iteration of the loop
-            if outputFrame is None:
+            if outputFrameMask is None:
                 continue
 
             # encode the frame in JPEG format
-            (flag, encodedImage) = cv2.imencode(".jpg", outputFrame)
+            (flag, encodedImage) = cv2.imencode(".jpg", outputFrameMask)
+            # print(flag)
 
             # ensure the frame was successfully encoded
             if not flag:
@@ -84,9 +71,36 @@ def generate():
         # yield the output frame in the byte format
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' +
                bytearray(encodedImage) + b'\r\n')
+        time.sleep(0.04)
+
+def generate_mask_raw():
+    # grab global references to the output frame and lock variables
+    global outputFrameRaw, lock
+
+    # loop over frames from the output stream
+    while True:
+        # wait until the lock is acquired
+        with lock:
+            # check if the output frame is available, otherwise skip
+            # the iteration of the loop
+            if outputFrameRaw is None:
+                continue
+
+            # encode the frame in JPEG format
+            (flag, encodedImage) = cv2.imencode(".jpg", outputFrameRaw)
+            # print(flag)
+
+            # ensure the frame was successfully encoded
+            if not flag:
+                continue
+
+        # yield the output frame in the byte format
+        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' +
+               bytearray(encodedImage) + b'\r\n')
+        time.sleep(0.04)
 
 def detect_motion():
-    global outputFrame
+    global outputFrameMask, outputFrameRaw
 
     while True:
 
@@ -104,19 +118,26 @@ def detect_motion():
 
         # cv2 from tutorial HERE
         ret, frame = cap.read()
+
+        with lock:
+            if frame is not None:
+                outputFrameRaw = frame.copy()
+
         # Comment / uncomment if camera needs to be flipped based on mount orentation
         # frame = cv2.flip(frame, -1)  # Flip camera vertically
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        blurred = cv2.GaussianBlur(frame, (5, 5), 0)
+        hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 
-        lower_range = np.array([0, 50, 0], dtype=np.uint8)
-        upper_range = np.array([0, 255, 255], dtype=np.uint8)
-
-        # create a mask for image
+        lower_range = np.array([35, 110, 40], dtype=np.uint8)
+        upper_range = np.array([85, 180, 130], dtype=np.uint8)
+        #
+        # # create a mask for image
         mask = cv2.inRange(hsv, lower_range, upper_range)
 
         # display both the mask and the image side-by-side
         with lock:
-            outputFrame = frame.copy()
+            if mask is not None:
+                outputFrameMask = mask.copy()
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -133,16 +154,20 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
 
     # start a thread that will perform motion detection
-    t = threading.Thread(target=detect_motion, args=(
-        args["frame_count"],))
+    t = threading.Thread(target=detect_motion)
     t.daemon = True
     t.start()
 
-    # start the flask app
-    app.run(host=args["ip"], port=args["port"], debug=True,
-            threaded=True, use_reloader=False)
+    def run():
+        app.run(host=args["ip"], port=args["port"], debug=True,
+                threaded=True, use_reloader=False)
+
+    # t2 = threading.Thread(target=run)
+    # t2.daemon = True
+    # t2.start()
+    run()
 
 
     angle = 0
-    cap = cv2.VideoCapture(0)
+
 
