@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="module" src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}
+{% block header_title %}
+  <h1>Settings</h1>
+{% endblock %}
+{% block content %}
+    <ul class="settings-list">
+        <li class="settings-list-header">
+            General:
+            <ul>
+                <li class="settings-list-item">
+                    <label for="settings-display">Display:</label>
+                    <select id="settings-display" name="display">
+                        <option value="compact">compact</option>
+                        <option value="relaxed">relaxed</option>
+                    </select> </li>
+            </ul>
+        </li>
+        <li class="settings-list-header">
+            Selection:
+            <ul>
+                <li class="settings-list-item">
+                    <label for="selection-automatic">Is the selection automatic?
+                        <input class="checkbox-settings" id="selection-automatic" type="checkbox"></label>
+                </li>
+                <li class="settings-list-item">
+                    <label for="selection-color">Selection color:
+                        <input class="color-settings" id="selection-color" type="color"></label>
+                </li>
+                <li class="settings-list-item">
+                    <label for="selection-thickness">Selection thickness in pixels:
+                        <input class="number-settings" id="selection-thickness" type="number"></label>
+                </li>
+            </ul>
+        </li>
+        <li class="settings-list-header">
+            Tracking:
+            <ul>
+                <li class="settings-list-item">
+                    <label for="tracking-color">Tracking color:</label>
+                    <input class="color-settings" id="tracking-color" type="color"> </li>
+                <li class="settings-list-item">
+                    <label for="tracking-thickness">Tracking thickness in pixels:</label>
+                    <input class="number-settings" id="tracking-thickness" type="number"> </li>
+                <li class="settings-list-item">
+                    <label for="tracking-display">Tracker display:</label>
+                    <select id="tracking-display" name="tracker">
+                        <option value="circle">circle</option>
+                        <option value="rectangle">rectangle</option>
+                    </select> </li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}

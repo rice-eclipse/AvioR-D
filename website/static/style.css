@@ -1,0 +1,222 @@
+:root {
+    --background: #fff;
+    --text-color: #000;
+    --button-border-color: #9b9b9b;
+    --button-background: #c2c0c0;
+    --dropdown-background: #d3d0d0;
+    --dropdown-border: #a4a4b4;
+    --add-video-length: 80px;
+}
+
+:root.dark-mode {
+    --background: #1e1e1f;
+    --text-color: #f1f1f1;
+    --button-border-color: #666572;
+    --button-background: #505050;
+    --dropdown-background: #45454f;
+    --dropdown-border: #77737f;
+}
+
+body {
+    background: var(--background);
+    color: var(--text-color);
+}
+
+.video.relaxed {
+    height: 50vw;
+    margin-bottom: 40px;
+    justify-content: center;
+}
+
+img {
+    width: auto;
+    max-height: 100%;
+}
+
+.video.compact {
+    height: 30vw;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.video-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 100%;
+}
+
+.video-add {
+    min-height: 100%;
+}
+
+.video-add-container {
+    width: var(--add-video-length);
+}
+
+.video-expand-add:hover ~ .video-add-container > .video-add {
+    display: flex !important;
+}
+
+.video-add:hover {
+    display: flex !important;
+}
+
+.video.compact .label p  {
+    height:16px !important;
+    font-size: small !important;
+    margin: 0 !important;
+}
+
+.video-add-selection {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 40px;
+    height: fit-content;
+}
+
+.video-add-option {
+    display: flex;
+    justify-content: center;
+    height: 20px;
+    width: 100%;
+}
+
+.unselectable {
+    /* For Opera and <= IE9, we need to add unselectable="on" attribute onto each element */
+    /* Check this site for more details: http://help.dottoro.com/lhwdpnva.php */
+    -moz-user-select: none; /* These user-select properties are inheritable, used to prevent text selection */
+    -webkit-user-select: none;
+    -ms-user-select: none; /* From IE10 only */
+    user-select: none; /* Not valid CSS yet, as of July 2012 */
+    -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
+    user-drag: none;
+}
+
+.label {
+    display: flex;
+    font-size: large;
+    font-weight: bold;
+    justify-content: center;
+}
+
+.label p {
+    width: fit-content;
+}
+
+.input-disabled {
+    color: grey !important;
+}
+
+.settings-list {
+    list-style: none;
+}
+
+select, input[type="color"], input[type="number"] {
+    background: var(--dropdown-background);
+    border: 2px solid var(--dropdown-border);
+    border-radius: 5px;
+    color: var(--text-color);
+}
+
+input[type="color"] {
+    width: 45px;
+}
+
+input[type="number"] {
+    width: 55px;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    margin: 0;
+}
+
+.widget button {
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+    padding: 0;
+    border-radius: 10px;
+    border: 2px solid var(--button-border-color);
+    background: var(--button-background);
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
+.widget a {
+    font-size: 2em;
+}
+
+.nav-link a {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-title {
+    display: flex;
+    justify-content: center;
+}
+
+#header-widgets {
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+}
+
+.header-container {
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+}
+
+ul {
+    list-style: inherit;
+}
+
+.settings-list-header {
+    margin-bottom: 5px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.settings-list-item {
+    margin-bottom: 5px;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+h1 {
+    width: fit-content;
+    margin: 0 auto 0 auto;
+}
+
+.videos-container {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    margin: 0 auto 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+a:link {
+      text-decoration: none;
+}
+
+a:visited {
+      text-decoration: none;
+}
+
+a:hover {
+      text-decoration: none;
+}
+
+a:active {
+      text-decoration: none;
+}

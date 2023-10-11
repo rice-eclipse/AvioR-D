@@ -1,0 +1,38 @@
+{
+  "gpio_port": {
+    "pan": 27,
+    "tilt": 17,
+    "button": 2
+  },
+  "website": {
+    "disable_cam_lock": true,
+    "disable_id_lock": true,
+    "default_display": "compact",
+    "tracker": "mosse",
+    "mask_updater": "rectangle",
+    "tracking_color": "#2024c2",
+    "tracking_thickness": 2,
+    "tracking_display": "rectangle",
+    "selection_automatic": false,
+    "selection_color": "#2024c2",
+    "selection_thickness": 2
+  },
+  "hardware": {
+    "pan": {
+      "gpio": 27,
+      "centered_min": 220,
+      "centered_max": 280,
+      "servo_min": 40,
+      "servo_max": 140,
+      "servo_step": 10
+    },
+    "tilt": {
+      "gpio": 27,
+      "centered_min": 140,
+      "centered_max": 210,
+      "servo_min": 40,
+      "servo_max": 140,
+      "servo_step": 10
+    }
+  }
+}

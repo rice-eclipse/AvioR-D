@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" class="{% if dark_mode %} dark-mode {% endif %}">
+<head>
+    {% block head %}
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} - Avio R&D</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% endblock %}
+</head>
+<body id="body">
+    {% block header %}
+    <nav class="header-container">
+        <script type="module" src="{{ url_for('static', filename='js/general.js') }}"></script>
+        <div id="header-widgets-balancer">
+          {% block header_widgets_balancer %}
+            {% if self.title() != "Home" %}
+              <div class="home-link widget">
+                  <button id="home-link" class="nav-link">
+                      <a href="/">⬅️</a>
+                  </button>
+              </div>
+            {% endif %}
+          {% endblock %}
+        </div>
+        <div class="header-title">
+            {% block header_title %}{% endblock %}
+        </div>
+        <div id="header-widgets">
+          {% block header_widgets %}
+            <div class="settings-link widget">
+                <button id="settings-link" class="nav-link">
+                    <a href="/settings">⚙️</a>
+                </button>
+            </div>
+            <div class="dark-light-toggle widget">
+                <button id="dark-light-toggle">
+                    <a> {% if dark_mode %} 🌕
+                        {% else %} 🌑
+                        {% endif %}
+                    </a>
+                </button>
+            </div>
+            <div class="read-write-toggle widget">
+                <button id="read-write-toggle">
+                    <a>🔒</a>
+                </button>
+            </div>
+          {% endblock %}
+        </div>
+    </nav>
+    {% endblock %}
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer">
+        {% block footer %}
+        {% endblock %}
+    </div>
+</body>
+</html>
